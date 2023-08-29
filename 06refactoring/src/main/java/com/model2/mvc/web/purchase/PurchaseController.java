@@ -1,4 +1,4 @@
-package com.model2.mvc.web.product;
+package com.model2.mvc.web.purchase;
 
 import java.util.Map;
 
@@ -27,15 +27,15 @@ import com.model2.mvc.service.purchase.impl.PurchaseServiceImpl;
 
 //==> 회원관리 Controller
 @Controller
-public class ProductController {
+public class PurchaseController {
 	
 	///Field
 	@Autowired
-	@Qualifier("productServiceImpl")
-	private ProductService productService;
+	@Qualifier("purchaseServiceImpl")
+	private PurchaseService purchaseService;
 	//setter Method 구현 않음
 		
-	public ProductController(){
+	public PurchaseController(){
 		System.out.println(this.getClass());
 	}
 	
@@ -49,8 +49,37 @@ public class ProductController {
 	//@Value("#{commonProperties['pageSize'] ?: 2}")
 	int pageSize;
 	
+	@RequestMapping("/listCart.do")
+	public String listCart( @ModelAttribute("search") Search search , Model model , HttpServletRequest request) throws Exception{
+		
+		HttpSession session=request.getSession();
+		User user=(User)session.getAttribute("user");
+		
+		String userId = user.getUserId();
+		System.out.println("/listCart.do");
+		
+		if(search.getCurrentPage() ==0 ){
+			search.setCurrentPage(1);
+		} 
+		
+		search.setPageSize(pageSize);
+		
+		// Business logic 수행
+		Map<String , Object> map=purchaseService.getCartList(search, userId);	
+		
+		Page resultPage = new Page( search.getCurrentPage(), ((Integer)map.get("totalCount")).intValue(), pageUnit, pageSize);
+		System.out.println(resultPage);
+		
+		// Model 과 View 연결
+		model.addAttribute("list", map.get("list"));
+		model.addAttribute("resultPage", resultPage);
+		model.addAttribute("search", search);
+
+		return "forward:/product/listCart.jsp";
 	
-	@RequestMapping("/addProduct.do")
+	}
+	
+	/*@RequestMapping("/addProduct.do")
 	public String addProduct(@ModelAttribute("product") Product product) throws Exception {
 
 		System.out.println("/addProduct.do");
@@ -105,31 +134,7 @@ public class ProductController {
 		return "redirect:/getProduct.do?prodNo="+product.getProdNo()+"&menu=manage";
 	}
 	
-	@RequestMapping("/listProduct.do")
-	public String listProduct( @ModelAttribute("search") Search search , Model model , HttpServletRequest request) throws Exception{
-		
-		System.out.println("/listProduct.do");
-		
-		if(search.getCurrentPage() ==0 ){
-			search.setCurrentPage(1);
-		} 
-		
-		search.setPageSize(pageSize);
-		
-		
-		// Business logic 수행
-		Map<String , Object> map=productService.getProductList(search);	
-		
-		Page resultPage = new Page( search.getCurrentPage(), ((Integer)map.get("totalCount")).intValue(), pageUnit, pageSize);
-		System.out.println(resultPage);
-		
-		// Model 과 View 연결
-		model.addAttribute("list", map.get("list"));
-		model.addAttribute("resultPage", resultPage);
-		model.addAttribute("search", search);
-		
-		return "forward:/product/listProduct.jsp";
-	}
+
 	
 	@RequestMapping("/deleteProduct.do")
 	public String deleteProduct( @RequestParam("prodNo") int prodNo , @ModelAttribute("search") Search search, Model model , HttpSession session) throws Exception{
@@ -160,6 +165,6 @@ public class ProductController {
 
 		return "redirect:/listCart.do?currentPage="+search.getCurrentPage();
 	
-	}
+	}*/
 	
 }

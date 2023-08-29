@@ -78,6 +78,10 @@ public class ProductServiceImpl implements ProductService{
 	public void deleteProduct(int prodNo) throws Exception{
 		productDao.deleteProduct(prodNo);
 	}
+	
+	public void deleteCart(int prodNo) throws Exception{
+		productDao.deleteCart(prodNo);
+	}
 
 
 }

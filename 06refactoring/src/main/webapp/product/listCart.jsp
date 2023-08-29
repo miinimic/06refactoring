@@ -73,16 +73,16 @@ function fncGetCartList(currentPage) {
 		<td align="center">${ i }</td>
 		<td></td>
 		<td align="left">
-		<a href="/getProduct.do?prodNo=${purchase.getPurchaseProd().getProdNo()}&menu=cart">${purchase.getPurchaseProd().getProdName()}</a>
+		<a href="/getProduct.do?prodNo=${product.getProdNo()}&menu=cart">${product.getProdName()}</a>
 		</td>
 		<td></td>
-		<td align="left">${purchase.getPurchaseProd().getCategory() }</td> 
+		<td align="left">${product.getCategory() }</td> 
 		<td></td>
-		<td align="left">${purchase.getPurchaseProd().getPrice() } ( 재고 : ${purchase.getPurchaseProd().getItem()} 개)</td> 
+		<td align="left">${product.getPrice() } ( 재고 : ${product.getItem()} 개)</td> 
 		<td></td>
-		<td align="left">${purchase.getPurchaseProd().getRegDate() }</td>
+		<td align="left">${product.getRegDate() }</td>
 		<td></td>	
-		<td align="left"><button><a href="/deleteCart.do?prodNo=${purchase.getPurchaseProd().getProdNo()}">삭제하기</a></button></td>
+		<td align="left"><button><a href="/deleteCart.do?prodNo=${product.getProdNo()}">삭제하기</a></button></td>
 		<td></td>		
 	</tr>	
 	<tr>
