@@ -58,8 +58,8 @@ function fncGetPurchaseList(currentPage) {
 		<c:set var="i" value="${ i+1 }" />
 		
 			<c:choose>
-			    <c:when test="${not empty purchase.getTranCode()}">
-			        <c:set var="tranCode" value="${purchase.getTranCode()}" />
+			    <c:when test="${not empty purchase.tranCode}">
+			        <c:set var="tranCode" value="${purchase.tranCode}" />
 			    </c:when>
 			    <c:otherwise>
 			        <c:set var="tranCode" value="${null}" />

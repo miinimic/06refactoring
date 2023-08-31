@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=euc-kr" %>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%-- <%@ page import="com.model2.mvc.service.domain.Product" %>
 <%@ page import="com.model2.mvc.service.domain.User" %>
@@ -24,7 +25,7 @@
 
 <body bgcolor="#ffffff" text="#000000">
 
-<form name="updatePurchase" method="post"	action="/updatePurchase.do?tranNo=${purchase.getTranNo() }&prodNo=${purchase.getPurchaseProd().getProdNo() }">
+<form name="updatePurchase" method="post"	action="/updatePurchase.do?tranNo=${purchase.purchase.tranNo }&prodNo=${purchase.product.prodNo }">
 
 <table width="100%" height="37" border="0" cellpadding="0" cellspacing="0">
 	<tr>
@@ -52,8 +53,8 @@
 	<tr>
 		<td width="104" class="ct_write">구매자아이디</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<td class="ct_write01">${purchase.getBuyer().getUserId()  }</td>
-		<input type="hidden" name="buyerId" value="${purchase.getBuyer().getUserId() }">
+		<td class="ct_write01">${purchase.user.userId }</td>
+		<input type="hidden" name="buyerId" value="${purchase.user.userId }">
 	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
@@ -77,7 +78,7 @@
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
 			<input 	type="text" name="receiverName" 	class="ct_input_g" style="width: 100px; height: 19px" 
-							maxLength="20" value="${purchase.getReceiverName() }" />
+							maxLength="20" value="${purchase.purchase.receiverName }" />
 		</td>
 	</tr>
 	<tr>
@@ -88,7 +89,7 @@
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
 			<input 	type="text" name="receiverPhone" class="ct_input_g" style="width: 100px; height: 19px" 
-							maxLength="20" value="${purchase.getReceiverPhone()  }" />
+							maxLength="20" value="${purchase.purchase.receiverPhone  }" />
 		</td>
 	</tr>
 
@@ -99,8 +100,8 @@
 		<td width="104" class="ct_write">구매자주소</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			<input 	type="text" name="receiverAddr" class="ct_input_g" style="width: 100px; height: 19px" 
-							maxLength="20" value="${purchase.getDivyAddr() }" />
+			<input 	type="text" name="divyAddr" class="ct_input_g" style="width: 100px; height: 19px" 
+							maxLength="20" value="${purchase.purchase.divyAddr }" />
 		</td>
 	</tr>
 	<tr>
@@ -111,7 +112,7 @@
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
 			<input 	type="text" name="item" class="ct_input_g" style="width: 100px; height: 19px" 
-							maxLength="20" value="${purchase.getItem() }" />
+							maxLength="20" value="${purchase.purchase.item }" />
 		</td>
 	</tr>
 	<tr>
@@ -121,8 +122,8 @@
 		<td width="104" class="ct_write">구매요청사항</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			<input 	type="text" name="receiverRequest" 	class="ct_input_g" style="width: 100px; height: 19px" 
-							maxLength="20" value="${purchase.getDivyRequest() }" />
+			<input 	type="text" name="divyRequest" 	class="ct_input_g" style="width: 100px; height: 19px" 
+							maxLength="20" value="${purchase.purchase.divyRequest }" />
 		</td>
 	</tr>
 	<tr>
@@ -132,11 +133,14 @@
 		<td width="104" class="ct_write">배송희망일자</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td width="200" class="ct_write01">
-			<input type="text" readonly="readonly" name="divyDate" class="ct_input_g" 
+			<c:set var="str" value="${purchase.purchase.divyDate.toString() }" />		
+			<c:set var="arrayOfStrings" value="${fn:split(str, ' ')}" />
+			<input type="text" readonly="readonly" name="divyDate" class="ct_input_g"  value="${arrayOfStrings[0] } "
 						style="width: 100px; height: 19px" maxLength="20"/>
 				<img 	src="../images/ct_icon_date.gif" width="15" height="15"	
 							onclick="show_calendar('document.updatePurchase.divyDate', document.updatePurchase.divyDate.value)"/>
 		</td>
+
 	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>

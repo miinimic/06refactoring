@@ -68,7 +68,7 @@ public class PurchaseDaoImpl implements PurchaseDao{
 		}
 		
 		public Map<String, Object> getPurchaseList(Search search,String buyerId ) throws Exception{
-			System.out.println("purchasedaoImpl로 들어온 : "+buyerId);
+
 			Map<String , Object>  map = new HashMap<String, Object>();
 			
 				map.put("search", search);
@@ -82,11 +82,15 @@ public class PurchaseDaoImpl implements PurchaseDao{
 					System.out.println("UserMapper에서 받은 user : "+list.get(i).getBuyer().getUserId());
 					list.get(i).setPurchaseProd((Product)sqlSession.selectOne("ProductMapper.findProduct", list.get(i).getPurchaseProd().getProdNo()));
 					System.out.println("productmapper에서 받은 product : "+list.get(i).getPurchaseProd().getProdNo());
+					list.get(i).setTranCode(list.get(i).getTranCode().trim());
 				}
 				
 				map.put("totalCount", sqlSession.selectOne("PurchaseMapper.getTotalCount", buyerId));
 		
 				map.put("list", list);
+				
+				System.out.println("dao"+map);
+				System.out.println("buyerid"+buyerId);
 
 			return map;
 		}
@@ -111,11 +115,13 @@ public class PurchaseDaoImpl implements PurchaseDao{
 		
 		public Map<String , Object> findPurchase(int tranNo) throws Exception{
 			Map<String , Object>  map = new HashMap<String, Object>();
-			
-			Purchase purchase = sqlSession.selectOne("PurchaseMapper.findPurchase", tranNo);
-			
+
+			Purchase purchase = sqlSession.selectOne("PurchaseMapper.findPurchase", tranNo);		
 			User user = sqlSession.selectOne("UserMapper.getUser", purchase.getBuyer().getUserId());
 			Product product = sqlSession.selectOne("ProductMapper.findProduct", purchase.getPurchaseProd().getProdNo());
+			
+			purchase.setPaymentOption(purchase.getPaymentOption().trim());
+			purchase.setTranCode(purchase.getTranCode().trim());
 			
 			map.put("product", product);
 			map.put("user", user);

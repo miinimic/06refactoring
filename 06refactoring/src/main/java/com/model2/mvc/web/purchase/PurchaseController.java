@@ -19,10 +19,13 @@ import com.model2.mvc.common.Page;
 import com.model2.mvc.common.Search;
 import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.User;
+import com.model2.mvc.service.domain.Purchase;
 import com.model2.mvc.service.product.ProductService;
 import com.model2.mvc.service.product.impl.ProductServiceImpl;
 import com.model2.mvc.service.purchase.PurchaseService;
 import com.model2.mvc.service.purchase.impl.PurchaseServiceImpl;
+import com.model2.mvc.service.user.UserService;
+import com.model2.mvc.service.user.impl.UserServiceImpl;
 
 
 //==> 회원관리 Controller
@@ -33,7 +36,14 @@ public class PurchaseController {
 	@Autowired
 	@Qualifier("purchaseServiceImpl")
 	private PurchaseService purchaseService;
-	//setter Method 구현 않음
+	
+	@Autowired
+	@Qualifier("productServiceImpl")
+	private ProductService productService;
+	
+	@Autowired
+	@Qualifier("userServiceImpl")
+	private UserService userService;
 		
 	public PurchaseController(){
 		System.out.println(this.getClass());
@@ -49,7 +59,7 @@ public class PurchaseController {
 	//@Value("#{commonProperties['pageSize'] ?: 2}")
 	int pageSize;
 	
-	@RequestMapping("/listCart.do")
+	/*@RequestMapping("/listCart.do")
 	public String listCart( @ModelAttribute("search") Search search , Model model , HttpServletRequest request) throws Exception{
 		
 		HttpSession session=request.getSession();
@@ -77,17 +87,146 @@ public class PurchaseController {
 
 		return "forward:/product/listCart.jsp";
 	
-	}
+	}*/
 	
-	/*@RequestMapping("/addProduct.do")
-	public String addProduct(@ModelAttribute("product") Product product) throws Exception {
-
-		System.out.println("/addProduct.do");
-		productService.insertProduct(product);
+	@RequestMapping("/addPurchase.do")
+	public String addPurchase(@RequestParam("prodNo") int prodNo, @RequestParam("buyerId") String userId, Model model, HttpServletRequest request ) throws Exception {
 		
-		return "forward:/product/addProduct.jsp";
+		System.out.println("/addPurchase.do");
+		
+		Purchase purchase = new Purchase();
+		Product product = productService.findProduct(prodNo);
+		User user = userService.getUser(userId);
+		
+		purchase.setPurchaseProd(product);
+		purchase.setBuyer(user);
+		purchase.setTranCode("2");
+		purchase.setDivyAddr(request.getParameter("receiverAddr"));
+		purchase.setDivyDate(request.getParameter("receiverDate"));
+		purchase.setDivyRequest(request.getParameter("receiverRequest"));		
+		purchase.setPaymentOption(request.getParameter("paymentOption"));
+		purchase.setReceiverName(request.getParameter("receiverName"));
+		purchase.setReceiverPhone(request.getParameter("receiverPhone"));	
+		purchase.setItem(Integer.parseInt(request.getParameter("item")));
+		
+		purchaseService.insertPurchase(purchase);
+		
+		model.addAttribute("purchase", purchase);		
+		
+		return "forward:/purchase/addPurchase.jsp";
+		
+	}
+	@RequestMapping("/addPurchaseView.do")
+	public String addPurchaseView(@RequestParam("prodNo") int prodNo, @RequestParam("userId") String userId, Model model) throws Exception {
+
+		System.out.println("/addPurchaseView.do");
+		
+		System.out.println("prodno : "+prodNo+"  userId : "+userId);
+		
+		Product product = productService.findProduct(prodNo);
+		User user = userService.getUser(userId);
+		
+		model.addAttribute("product", product);
+		model.addAttribute("user", user);
+		
+		return "forward:/purchase/addPurchaseView.jsp";
 	}
 	
+	@RequestMapping("/getPurchase.do")
+	public String getPurchase( @RequestParam("tranNo") int tranNo , Model model ) throws Exception {
+		
+		System.out.println("/getPurchase.do");
+		//Business Logic
+		System.out.println(tranNo+" : getPurchaseControllers tranNo");
+		Map<String , Object> purchase = purchaseService.findPurchase(tranNo);
+		// Model 과 View 연결
+		model.addAttribute("purchase", purchase);
+
+		return "forward:/purchase/getPurchase.jsp";
+	}
+	
+	@RequestMapping("/listPurchase")
+	public String listPurchase( @ModelAttribute("search") Search search , Model model , HttpServletRequest request) throws Exception{
+		
+		System.out.println("/listPurchase");
+		
+		HttpSession session=request.getSession();
+		User user = (User)session.getAttribute("user");
+		String buyerId = user.getUserId();	
+		
+		if(search.getCurrentPage() ==0 ){
+			search.setCurrentPage(1);
+		} 
+
+		search.setPageSize(pageSize);
+		
+		// Business logic 수행
+		Map<String , Object> map=purchaseService.getPurchaseList(search, buyerId);	
+		
+		Page resultPage = new Page( search.getCurrentPage(), ((Integer)map.get("totalCount")).intValue(), pageUnit, pageSize);
+		System.out.println(resultPage);
+		
+		// Model 과 View 연결
+		model.addAttribute("list", map.get("list"));
+		model.addAttribute("resultPage", resultPage);
+		model.addAttribute("search", search);
+		
+		System.out.println("purchase list : "+map.get("list"));
+	
+		return "forward:/purchase/listPurchase.jsp";
+		
+	}
+	
+	@RequestMapping("/updatePurchaseView.do")
+	public String updatePurchaseView( @RequestParam("tranNo") int tranNo , Model model ) throws Exception{
+
+		System.out.println("/updatePurchaseView.do");
+		//Business Logic
+		Map<String , Object> purchase = purchaseService.findPurchase(tranNo);
+		// Model 과 View 연결
+		model.addAttribute("purchase", purchase);
+	
+		return "forward:/purchase/updatePurchaseView.jsp";
+	}
+	@RequestMapping("/updatePurchase.do")
+	public String updatePurchase( @ModelAttribute("purchase") Purchase purchase , @RequestParam("prodNo") int prodNo, Model model , HttpSession session) throws Exception{
+
+		System.out.println("/updatePurchase.do");
+		//Business Logic
+
+		int tranNo = purchase.getTranNo();
+		
+		purchaseService.updatePurchase(purchase, prodNo);
+		
+		Map<String , Object> result = purchaseService.findPurchase(tranNo);
+		
+		model.addAttribute("purchase", result);
+		
+		return "forward:/purchase/getPurchase.jsp";
+	}
+	@RequestMapping("/updateTranCode.do")
+	public String updateTranCode( @ModelAttribute("search") Search search, @RequestParam("tranNo") int tranNo, @RequestParam("tranCode") String tranCode, @RequestParam("prodNo") int prodNo, Model model , HttpSession session) throws Exception{
+
+		System.out.println("/updateTranCode.do");
+		//Business Logic
+		
+		Product product = productService.findProduct(prodNo);
+		Map<String , Object> result = purchaseService.findPurchase(tranNo);
+		Purchase purchase = (Purchase)result.get("purchase");
+			
+		purchase.setTranCode(tranCode);
+		purchase.setPurchaseProd(product);
+		purchase.setTranNo(tranNo);
+		
+		purchaseService.updateTranCode(purchase);
+
+			if( search.getMenu().equals("manage")) {
+				return "forward:/listProduct.do?page="+search.getCurrentPage();
+			} else {
+				return "forward:/listPurchase.do?page="+search.getCurrentPage();
+			}
+	}
+	/*
 	@RequestMapping("/addCart.do")
 	public String addCart(@RequestParam("prodNo") int prodNo, @RequestParam("userId") String userId) throws Exception {
 
@@ -97,74 +236,11 @@ public class PurchaseController {
 		return "redirect:/listProduct.do?menu=search";
 	}
 	
-	@RequestMapping("/getProduct.do")
-	public String getProduct( @RequestParam("prodNo") int prodNo , Model model ) throws Exception {
-		
-		System.out.println("/getProduct.do");
-		//Business Logic
-		Product product = productService.findProduct(prodNo);
-		// Model 과 View 연결
-		model.addAttribute("product", product);
-		
-		return "forward:/product/getProduct.jsp";
-	}
-	
-	@RequestMapping("/updateProductView.do")
-	public String updateProductView( @RequestParam("prodNo") int prodNo , Model model ) throws Exception{
 
-		System.out.println("/updateProductView.do");
-		//Business Logic
-		Product product = productService.findProduct(prodNo);
-		// Model 과 View 연결
-		model.addAttribute("product", product);
-	
-		return "forward:/product/updateProductView.jsp";
-	}
-	
-	@RequestMapping("/updateProduct.do")
-	public String updateProduct( @ModelAttribute("product") Product product , Model model , HttpSession session) throws Exception{
-
-		System.out.println("/updateProduct.do");
-		//Business Logic
-		
-		System.out.println("regdate : "+product.getRegDate());
-
-		productService.updateProduct(product);
-		
-		return "redirect:/getProduct.do?prodNo="+product.getProdNo()+"&menu=manage";
-	}
 	
 
 	
-	@RequestMapping("/deleteProduct.do")
-	public String deleteProduct( @RequestParam("prodNo") int prodNo , @ModelAttribute("search") Search search, Model model , HttpSession session) throws Exception{
 
-		System.out.println("/deleteProduct.do");
-		//Business Logic
-		
-		if(search.getCurrentPage() ==0 ){
-			search.setCurrentPage(1);
-		} 
-		
-		productService.deleteProduct(prodNo); 
-
-		return "redirect:/listProduct.do?currentPage="+search.getCurrentPage()+"&menu="+search.getMenu();
-	}
-	
-	@RequestMapping("/deleteCart.do")
-	public String deleteCart( @RequestParam("prodNo") int prodNo , @ModelAttribute("search") Search search, Model model , HttpSession session) throws Exception{
-
-		System.out.println("/deleteCart.do");
-		//Business Logic
-		
-		if(search.getCurrentPage() ==0 ){
-			search.setCurrentPage(1);
-		} 
-		
-		productService.deleteCart(prodNo);
-
-		return "redirect:/listCart.do?currentPage="+search.getCurrentPage();
-	
-	}*/
+*/
 	
 }

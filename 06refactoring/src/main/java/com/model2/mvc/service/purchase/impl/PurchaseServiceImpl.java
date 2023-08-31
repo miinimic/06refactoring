@@ -49,15 +49,10 @@ public class PurchaseServiceImpl implements PurchaseService{
 	}
 	
 	public Map<String , Object > getPurchaseList(Search search, String buyerId) throws Exception {
-		System.out.println("purchaseserviceImpl 로 들어온 buyerId : "+buyerId);
-		Map<String , Object > list= purchaseDao.getPurchaseList(search, buyerId); 
-		int totalCount = purchaseDao.getTotalCount(buyerId);
 		
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("list", list );
-		map.put("totalCount", new Integer(totalCount));
+		Map<String , Object > list= purchaseDao.getPurchaseList(search, buyerId); 		
 		
-		return map;
+		return list;
 	}
 	
 	public Map<String,Object> getCartList(Search search, String userId) throws Exception {
