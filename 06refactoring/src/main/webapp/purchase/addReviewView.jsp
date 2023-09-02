@@ -6,7 +6,7 @@
 <head>
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
 
-<title>후기 작성</title>
+<title>후기 작성</title> 
 
 <script type="text/javascript" src="../javascript/calendar.js">
 </script>
@@ -15,7 +15,7 @@
 
 <body bgcolor="#ffffff" text="#000000">
 
-<form name="addReview" method="post"	action="/addReview.do?tranNo=${purchase.getTranNo() }">
+<form name="addReview" method="post"	action="/addReview.do?tranNo=${purchase.purchase.tranNo }">
 
 <table width="100%" height="37" border="0" cellpadding="0" cellspacing="0">
 	<tr>
@@ -43,8 +43,8 @@
 	<tr>
 		<td width="104" class="ct_write">구매자아이디</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<td class="ct_write01">${purchase.getBuyer().getUserId()  }</td>
-		<input type="hidden" name="buyerId" value="${purchase.getBuyer().getUserId() }">
+		<td class="ct_write01">${purchase.user.userId  }</td>
+		<input type="hidden" name="buyerId" value="${purchase.buyer.userId }">
 	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
@@ -53,7 +53,7 @@
 		<td width="104" class="ct_write">구매자이름</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			${purchase.getReceiverName() }
+			${purchase.user.userName }
 		</td>
 	</tr>
 	<tr>
@@ -63,7 +63,7 @@
 		<td width="104" class="ct_write">상품명</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			${purchase.getPurchaseProd().getProdName() }
+			${product.prodName }
 		</td>
 	</tr>
 	<tr>
@@ -73,7 +73,7 @@
 		<td width="104" class="ct_write">상품 카테고리</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			${purchase.getPurchaseProd().getCategory() }
+			${product.category }
 		</td>
 	</tr>
 	<tr>
@@ -83,7 +83,7 @@
 		<td width="104" class="ct_write">상품 상세정보</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			${purchase.getPurchaseProd().getProdDetail() }
+			${product.prodDetail }
 		</td>
 	</tr>
 		<tr>
@@ -93,7 +93,7 @@
 		<td width="104" class="ct_write">상품 가격</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			${purchase.getPurchaseProd().getPrice() }
+			${product.price }
 		</td>
 	</tr>
 

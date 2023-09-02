@@ -67,22 +67,22 @@ function fncGetCartList(currentPage) {
 	</tr>
 
 	<c:set var="i" value="0" />
-	<c:forEach var="purchase" items="${list}">
+	<c:forEach var="cart" items="${list}">
 		<c:set var="i" value="${ i+1 }" />
 		<tr class="ct_list_pop">
 		<td align="center">${ i }</td>
 		<td></td>
 		<td align="left">
-		<a href="/getProduct.do?prodNo=${product.getProdNo()}&menu=cart">${product.getProdName()}</a>
+		<a href="/getProduct.do?prodNo=${cart.getCartProd().getProdNo()}&menu=cart">${cart.getCartProd().getProdName()}</a>
 		</td>
 		<td></td>
-		<td align="left">${product.getCategory() }</td> 
+		<td align="left">${cart.getCartProd().getCategory() }</td> 
 		<td></td>
-		<td align="left">${product.getPrice() } ( 재고 : ${product.getItem()} 개)</td> 
+		<td align="left">${cart.getCartProd().getPrice()} 원 ( 재고 : ${cart.getCartProd().getItem()} 개)</td> 
 		<td></td>
-		<td align="left">${product.getRegDate() }</td>
+		<td align="left">${cart.getCartProd().getRegDate() }</td>
 		<td></td>	
-		<td align="left"><button><a href="/deleteCart.do?prodNo=${product.getProdNo()}">삭제하기</a></button></td>
+		<td align="left"><button><a href="/deleteCart.do?prodNo=${cart.getCartProd().getProdNo()}">삭제하기</a></button></td>
 		<td></td>		
 	</tr>	
 	<tr>

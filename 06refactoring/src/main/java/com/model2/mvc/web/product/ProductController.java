@@ -146,20 +146,6 @@ public class ProductController {
 		return "redirect:/listProduct.do?currentPage="+search.getCurrentPage()+"&menu="+search.getMenu();
 	}
 	
-	@RequestMapping("/deleteCart.do")
-	public String deleteCart( @RequestParam("prodNo") int prodNo , @ModelAttribute("search") Search search, Model model , HttpSession session) throws Exception{
 
-		System.out.println("/deleteCart.do");
-		//Business Logic
-		
-		if(search.getCurrentPage() ==0 ){
-			search.setCurrentPage(1);
-		} 
-		
-		productService.deleteCart(prodNo);
-
-		return "redirect:/listCart.do?currentPage="+search.getCurrentPage();
-	
-	}
 	
 }

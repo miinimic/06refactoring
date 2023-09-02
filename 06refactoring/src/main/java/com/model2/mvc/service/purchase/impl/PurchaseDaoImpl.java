@@ -64,6 +64,8 @@ public class PurchaseDaoImpl implements PurchaseDao{
 				
 				map.put("list", list);
 				
+				System.out.println("map : "+map);
+				
 			return map;
 		}
 		
@@ -96,6 +98,7 @@ public class PurchaseDaoImpl implements PurchaseDao{
 		}
 		
 		public Map<String, Object> getReviewList(Search search) throws Exception{
+			
 			Map<String , Object>  map = new HashMap<String, Object>();
 				List<Purchase> list = sqlSession.selectList("PurchaseMapper.getReviewList", search); 
 				
@@ -136,27 +139,42 @@ public class PurchaseDaoImpl implements PurchaseDao{
 			int tranItem = sqlSession.selectOne("PurchaseMapper.findPurchaseItem", purchase.getTranNo());	 
 
 			int item = (proItem + tranItem) - purchase.getItem();		
-			
+			System.out.println("purchase.getDivyDate : "+purchase.getDivyDate());
+
 			sqlSession.update("PurchaseMapper.updatePurchase", purchase);
 			
 			updateProductItem(item, prodNo);
 
 		}
 		
-		public void updateTranCode(Purchase purchase) throws Exception{
-			sqlSession.update("PurchaseMapper.updateTranCode", purchase);
+		public void updateTranCode(int tranNo, String tranCode) throws Exception{
+			Map<String , Object>  map = new HashMap<String, Object>();
+			
+			map.put("tranCode", tranCode);
+			map.put("tranNo", tranNo);
+
+			sqlSession.update("PurchaseMapper.updateTranCode", map);
+			
+			/*
+			  구매완료 -> 2
+				배송하기 -> 3
+				상품도착 -> 4
+				구매확정 -> 5
+				후기작성완료 -> 6
+			 */
+
 		}
 		
 		public int findCartCount(int ProdNo) throws Exception{
 			return sqlSession.selectOne("PurchaseMapper.findCartCount", ProdNo);
 		}
 		
-		public void deleteCart(int ProdNo) throws Exception{
-			sqlSession.delete("PurchaseMapper.deleteCart", ProdNo);
+		public void deleteReview(int tranNo) throws Exception{
+			sqlSession.update("PurchaseMapper.deleteReview", tranNo);			
 		}
 		
-		public void deleteReview(int tranNo) throws Exception{
-			sqlSession.update("PurchaseMapper.deleteReview", tranNo);
+		public void deleteCart(int prodNo) throws Exception{
+			sqlSession.update("PurchaseMapper.deleteCart", prodNo);
 		}
 		
 		public void addReview(int tranNo, String review) throws Exception{
@@ -190,8 +208,6 @@ public class PurchaseDaoImpl implements PurchaseDao{
 			sqlSession.update("PurchaseMapper.updateItem", map);
 				
 		}
-	
-		//public Map<String,Object> getReviewList(Search search, String userId) throws Exception;
 		
 		public void updateProductItem(int item, int prodNo) throws Exception{
 			

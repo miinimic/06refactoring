@@ -316,7 +316,7 @@ function fncGetProductList(currentPage) {
                 </c:choose>               
             </c:when>
             <c:when test="${tranCode eq '2'}">
-                구매완료 <button><a href="updateTranCode.do?tranNo=${product.getTranNo() }&menu=manage&prodNo=${product.getProdNo()}&tranCode=3&currentPage=${resultPage.currentPage}">배송하기</a></button>
+                구매완료 <button><a href="updateTranCode.do?tranNo=${product.getTranNo() }&menu=manage&prodNo=${product.getProdNo()}&reviewCode=null&tranCode=3&currentPage=${resultPage.currentPage}">배송하기</a></button>
             </c:when>
             <c:when test="${tranCode eq '3'}">
                 배송중

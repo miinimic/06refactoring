@@ -133,11 +133,11 @@
 		<td width="104" class="ct_write">πËº€»Ò∏¡¿œ¿⁄</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td width="200" class="ct_write01">
-			<c:set var="str" value="${purchase.purchase.divyDate.toString() }" />		
-			<c:set var="arrayOfStrings" value="${fn:split(str, ' ')}" />
-			<input type="text" readonly="readonly" name="divyDate" class="ct_input_g"  value="${arrayOfStrings[0] } "
-						style="width: 100px; height: 19px" maxLength="20"/>
-				<img 	src="../images/ct_icon_date.gif" width="15" height="15"	
+			        <c:set var="str" value="${purchase.purchase.divyDate.toString() }" />		
+					<c:set var="arrayOfStrings" value="${fn:split(str, ' ')}" />
+					<input type="text" readonly="readonly" name="divyDate" class="ct_input_g"  value="${arrayOfStrings[0] } "
+									style="width: 100px; height: 19px" maxLength="20"/>
+					<img 	src="../images/ct_icon_date.gif" width="15" height="15"	
 							onclick="show_calendar('document.updatePurchase.divyDate', document.updatePurchase.divyDate.value)"/>
 		</td>
 

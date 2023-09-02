@@ -82,7 +82,7 @@ function fncGetPurchaseList(currentPage) {
 			<c:when test="${ tranCode eq '3' }">
 				배송중
 			</c:when>
-			<c:when test="${ tranCode eq '4' }">
+			<c:when test="${ tranCode eq '4' || tranCode eq '5' || tranCode eq '6'}">
 				배송완료
 			</c:when>
 			<c:otherwise>
@@ -96,18 +96,18 @@ function fncGetPurchaseList(currentPage) {
 		<c:choose>
 			<c:when test="${tranCode eq '3' }">
 				<button>
-				<a href="updateTranCode.do?tranNo=${ purchase.getTranNo()}&menu=purchase&prodNo=${purchase.getPurchaseProd().getProdNo()  }&tranCode=4&currentPage=${resultPage.getCurrentPage()}">상품도착</a>
+				<a href="updateTranCode.do?tranNo=${ purchase.getTranNo()}&menu=purchase&tranCode=4&currentPage=${resultPage.getCurrentPage()}">상품도착</a>
 				</button>		
 			</c:when>
-			<c:when test="${tranCode eq '4' && empty purchase.getReviewCode()}">
-				<button><a href="updateTranCode.do?tranNo=${ purchase.getTranNo()}&menu=purchase&prodNo=${purchase.getPurchaseProd().getProdNo()  }&tranCode=5&currentPage=${resultPage.getCurrentPage()}">구매확정</a></button>
+			<c:when test="${tranCode eq '4'}">
+				<button><a href="updateTranCode.do?tranNo=${ purchase.getTranNo()}&menu=purchase&tranCode=5&currentPage=${resultPage.getCurrentPage()}">구매확정</a></button>
 			</c:when>
-			<c:when test="${tranCode eq '4' && purchase.getReviewCode() eq '5'}">
+			<c:when test="${tranCode eq '5'}">
 				<button>
 				<a href="/addReviewView.do?tranNo=${purchase.getTranNo() }&prodNo=${purchase.getPurchaseProd().getProdNo()  }&tranCode=6" >후기쓰기</a>
 				</button>		
 			</c:when>
-			<c:when test="${ tranCode eq '4' && purchase.getReviewCode() eq '6'}">
+			<c:when test="${ tranCode eq '6'}">
 			
 			<button><a href="/listReview.do" >후기 작성 완료</a></button>
 						
